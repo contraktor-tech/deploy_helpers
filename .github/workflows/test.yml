@@ -1,34 +1,48 @@
 name: pr
 on:
   pull_request:
-    braches: 
+    branches:
       - master
       - feat/CK-1933
 
 jobs:
-  test:
-    runs-on: migrations
-    steps:
-      - uses: actions/checkout@v2
+  # tests:
+    # runs-on: migrations
+    # steps:
+      # - uses: actions/checkout@v2
       # - uses: actions/setup-python@v2
-      #   with:
-      #     python-version: '3.9'
+        # with:
+          # python-version: '3.9'
 
       # - name: Install dependencies
       #   run: |
       #     pip install -r required
       #     pip install -r require.dev
- 
+
       # - name: run tests
-      #   run: |
-      #     pytest --cov-report=xml --cov=status-update --cov-report term-missing --cov ${GITHUB_WORKSPACE}/src
+        # run: |
+          # pytest --cov-report=xml --cov=status-update --cov-report term-missing --cov ${GITHUB_WORKSPACE}/src
+          # sed -i "s|${GITHUB_WORKSPACE}|/github/workspace|g" coverage.xml
+
+      # - name: upload artifact
+        # uses: actions/upload-artifact@v2
+        # with:
+          # name: files
+          # path: |
+            # coverage.xml
+            # action.yml
+            # sonar-project.properties
+            # src
+          # retention-days: 1
+
+  sonarqube:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
 
       - name: SonarQube Analysis
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: |
-          sonar-scanner \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=${SONAR_HOST_URL} \
-            -Dsonar.login=${SONAR_TOKEN}
