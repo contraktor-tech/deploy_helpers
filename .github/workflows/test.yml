@@ -3,7 +3,6 @@ on:
   pull_request:
     branches:
       - master
-      - feat/CK-1933
 
 jobs:
   # tests:
